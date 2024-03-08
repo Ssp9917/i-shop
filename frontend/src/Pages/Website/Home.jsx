@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "../../Container/Website/Container";
 import Corousel from "../../Container/Image/2_corousel.png";
 import { FaStar } from "react-icons/fa";
@@ -9,20 +9,20 @@ import Support from "../../Container/Image/support.svg";
 import BeatsSolo from "../../Container/Image/beats_solo_2.png";
 import Hsquared from "../../Container/Image/H-squared.png";
 import Netatmo_rain from "../../Container/Image/Netatmo_rain.png";
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import ProductBox from "./ProductBox";
+import { MainContext } from "../../Context/Context";
 
-
-
-
+// Home Component
 const Home = () => {
+
   return (
     <>
       <Container
         fluid
-        extraClass="md:h-[650px] h-[400px] mt-5"
+        extraclassName="md:h-[650px] h-[400px] mt-5"
         style={{
           background:
             "linear-gradient(67deg, #e71d3a 0%, #ecc7c1 45%, #efcac4 58%, #e4bdb8 70%, #42a8fe 100%) 0% 0% no-repeat",
@@ -30,11 +30,15 @@ const Home = () => {
       >
         <Container>
           <div className="relative md:h-[650px] h-[400px]">
-            <img src={Corousel} alt="" className="absolute right-0 bottom-0  h-full" />
+            <img
+              src={Corousel}
+              alt=""
+              className="absolute right-0 bottom-0  h-full"
+            />
           </div>
         </Container>
       </Container>
-      <BestSellor />
+      <BestSellor/>
       <Offer />
       <Service />
       <Featured />
@@ -44,37 +48,34 @@ const Home = () => {
 
 export default Home;
 
+// BestSellor Sub Component
 export function BestSellor() {
-  const category = [
-    {
-      name: "All",
-    },
-    {
-      name: "Mac",
-    },
-    {
-      name: "iPhone",
-    },
-    {
-      name: "iPad",
-    },
-    {
-      name: "iWatch",
-    },
-    {
-      name: "Accessories",
-    },
-  ];
+  // useContext
+  const { category, fetchCategory,fetchBestSellor,bestSellor,setCat,cat,catFilterProduct } = useContext(MainContext);
 
- 
+  // first time loading
+  useEffect(() => {
+    fetchCategory();
+    fetchBestSellor()
+  }, []);
 
   return (
     <Container>
       <h1 className="text-3xl text-center font-bold mt-3">Best Seller</h1>
       <ul className="hidden sm:flex justify-center gap-5 mt-2 ">
+        <li
+          className="hover:text-blue-600 font-[600] cursor-pointer"
+          onClick={() => setCat(0)}
+        >
+          All 😎
+        </li>
         {category.map((d, i) => {
           return (
-            <li key={i} className="hover:text-blue-600 font-[600]">
+            <li
+              key={i}
+              className="hover:text-blue-600 font-[600] cursor-pointer"
+              onClick={() => setCat(d._id)}
+            >
               {d.name}
             </li>
           );
@@ -89,34 +90,47 @@ export function BestSellor() {
         </label>
         <select
           id="countries"
+          onChange={(e) => setCat(e.target.value)}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
+          <option value={0}>All</option>;
           {category.map((d, i) => {
-            return <option key={i}>{d.name}</option>;
+            return (
+              <option key={i} value={d._id}>
+                {d.name}
+              </option>
+            );
           })}
         </select>
       </div>
 
-      <div>
-        <ProductBox/>
+     {/* Product Listing */}
+      <div className="grid md:grid-cols-4 sm:grid-cols-2 gap-4">
+        {
+         (cat==0?bestSellor:catFilterProduct).map(
+            (prod,index)=>{
+              // console.log(prod)
+             return <ProductBox {...prod} key={index}/>
+            }
+          )
+        }
       </div>
     </Container>
   );
 }
-
+// Offer subComponent
 export function Offer() {
-
   return (
-    <Container fluid extraClass="bg-[#2e90e5]">
+    <Container fluid extraClass="bg-[#2E90E5]">
       <Container>
         <div className="md:flex flex-col md:flex-row w-full lg:h-[555px] md:h-[435px] sm:h-[435px] h-[507px] relative  mt-20 ">
           <div className="md:w-[50%] w-full flex justify-start pt-0 pl-4 md:pl-0 md:pt-0 items-center ">
             <div className="  flex  gap-5 flex-col">
-            <h1 className="text-6xl text-white ">iPhone 6 Plus</h1>
-            <p className="text-white font-[500]">
-              Performance and design. Taken <br /> right to the edge.
-            </p>
-            <p className="text-white font-bold">SHOP NOW</p>
+              <h1 className="text-6xl text-white ">iPhone 6 Plus</h1>
+              <p className="text-white font-[500]">
+                Performance and design. Taken <br /> right to the edge.
+              </p>
+              <p className="text-white font-bold">SHOP NOW</p>
             </div>
           </div>
           <div className="lg:w-full absolute lg:-top-16  md:-top-20 sm:w-[475px]  sm:-top-20  w-[320px] top-40 right-0  md:-right-0">
@@ -128,8 +142,8 @@ export function Offer() {
   );
 }
 
+// Service SubComponent
 function Service() {
-
   const service = [
     {
       image: Shiping,
@@ -153,7 +167,7 @@ function Service() {
 
   return (
     <Container>
-      <div className="mt-5 flex justify-center gap-4 flex-wrap ">
+      <div className="mt-5 flex justify-around gap-4 flex-wrap ">
         {service.map((d, i) => {
           return (
             <div
@@ -171,8 +185,8 @@ function Service() {
   );
 }
 
+// Featured SubComponent
 export function Featured() {
-
   const featured = [
     {
       image: BeatsSolo,
@@ -210,96 +224,91 @@ export function Featured() {
       new_price: 499,
       old_price: 599,
     },
-
   ];
 
   const settings = {
-    
     dots: true,
     infinite: true,
     // speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: false,
-      speed: 2000,
-      autoplaySpeed: 2000,
-      cssEase: "linear",
-      pauseOnHover: true,
-      responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 3,
-            slidesToScroll: 3,
-            infinite: true,
-            dots: true
-          }
+    speed: 2000,
+    autoplaySpeed: 2000,
+    cssEase: "linear",
+    pauseOnHover: true,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
         },
-        {
-          breakpoint: 600,
-          settings: {
-            slidesToShow: 2,
-            slidesToScroll: 2,
-            initialSlide: 2
-          }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2,
         },
-        {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 1,
-            slidesToScroll: 1
-          }
-        }
-      ]
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
-
-    
-
     <Container>
-
       <h1 className="text-3xl font-bold text-center mt-8">FEATURED PRODUCTS</h1>
 
       <div className="mt-10 relative">
-      <Slider {...settings}>
-        {featured.map((d, i) => {
-          return (
-            <div className="hover:shadow-2xl w-[300px] pl-8 changeDisplay" key={i}>
-              <div  className="w-[150px]">
-              <img src={d.image} alt=""/>
-
-              </div>
-              <div className="text-center w-[150px]">
-                <p>{d.name}</p>
-                <ul className="flex justify-center gap-1 mt-2 mb-2">
-                  <li className="text-yellow-400">
-                    <FaStar />
-                  </li>
-                  <li className="text-yellow-400">
-                    <FaStar />
-                  </li>
-                  <li className="text-yellow-400">
-                    <FaStar />
-                  </li>
-                  <li className="text-yellow-400">
-                    <FaStar />
-                  </li>
-                  <li className="text-yellow-400" i>
-                    <FaStarHalf />
-                  </li>
-                </ul>
-                <div className="flex gap-3 justify-center">
-                  <p className="text-red-600 font-[600]">${d.new_price}</p>
-                  <p className="line-through">${d.old_price}</p>
+        <Slider {...settings}>
+          {featured.map((d, i) => {
+            return (
+              <div
+                className="hover:shadow-2xl w-[300px] pl-8 changeDisplay"
+                key={i}
+              >
+                <div className="w-[150px]">
+                  <img src={d.image} alt="" />
+                </div>
+                <div className="text-center w-[150px]">
+                  <p>{d.name}</p>
+                  <ul className="flex justify-center gap-1 mt-2 mb-2">
+                    <li className="text-yellow-400">
+                      <FaStar />
+                    </li>
+                    <li className="text-yellow-400">
+                      <FaStar />
+                    </li>
+                    <li className="text-yellow-400">
+                      <FaStar />
+                    </li>
+                    <li className="text-yellow-400">
+                      <FaStar />
+                    </li>
+                    <li className="text-yellow-400" i>
+                      <FaStarHalf />
+                    </li>
+                  </ul>
+                  <div className="flex gap-3 justify-center">
+                    <p className="text-red-600 font-[600]">${d.new_price}</p>
+                    <p className="line-through">${d.old_price}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
         </Slider>
       </div>
     </Container>
-   
   );
 }

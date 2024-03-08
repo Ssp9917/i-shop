@@ -1,6 +1,14 @@
+/* poppins font family */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,body,root{
+  font-family: "Poppins", sans-serif;
+}
 
 .changeDisplay {
   display: flex !important;
@@ -15,7 +23,7 @@
   height: 100% !important;
   color: black !important;
   z-index: 999 !important;
-  background: black !important;
+  /* background: black !important; */
  
 
 }
@@ -68,3 +76,15 @@ background: linear-gradient(158deg, rgba(39,28,255,1) 0%, rgba(0,198,255,1) 0%, 
   width: 100%;
 }
 
+.b1{
+  background: radial-gradient(circle, rgba(174,226,238,1) 0%, rgba(215,148,233,1) 100%);
+}
+.b2{
+  background: radial-gradient(circle, rgba(229,238,174,1) 0%, rgba(233,148,164,1) 100%);
+}
+.b3{
+  background: radial-gradient(circle, rgba(174,238,235,1) 0%, rgba(153,233,148,1) 100%);
+}
+.b4{
+  background: radial-gradient(circle, rgba(180,174,238,1) 0%, rgba(233,148,158,1) 100%);
+}

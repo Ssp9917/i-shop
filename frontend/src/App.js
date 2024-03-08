@@ -9,6 +9,10 @@ import AdminHome from './Pages/Admin/AdminHome'
 import CategoryView from './Pages/Admin/category/CategoryView'
 import ColorView from './Pages/Admin/colors/ColorView'
 import ProductView from './Pages/Admin/product/ProductView'
+import ColorAdd from './Pages/Admin/colors/ColorAdd'
+import ColorEdit from './Pages/Admin/colors/ColorEdit'
+import ProductAdd from './Pages/Admin/product/ProductAdd'
+import ProductEdit from './Pages/Admin/product/ProductEdit'
 
 
 const routes = createBrowserRouter(
@@ -18,15 +22,15 @@ const routes = createBrowserRouter(
       element:<WebsiteMain/>,
       children:[
         {
-          path:"/",
+          path:"",
           element:<Home/>
         },
         {
-          path:"/store",
+          path:"store/:category_slug?",
           element:<Store/>
         },
         {
-          path:"/cart",
+          path:"cart",
           element:<Cart/>
         }
       ]
@@ -51,7 +55,22 @@ const routes = createBrowserRouter(
           path:'product',
           element:<ProductView/>
         },
-
+        {
+          path:'color/add',
+          element:<ColorAdd/>
+        },
+        {
+          path:'color/edit/:id?',
+          element:<ColorEdit/>
+        },
+        {
+          path:'product/add',
+          element:<ProductAdd/>
+        },
+        {
+          path:'product/edit/:id?',
+          element:<ProductEdit/>
+        }
       ]
     }
   ]

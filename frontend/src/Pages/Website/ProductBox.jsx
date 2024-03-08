@@ -1,115 +1,68 @@
-import React from "react";
-import Container from "../../Container/Website/Container";
+import React, { useContext, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-import { FaStarHalf } from "react-icons/fa";
-import AppleMacBookAir from "../../Container/Image/Apple Macbook Air.png";
-import AppleiPad2A from "../../Container/Image/ipod-touch-select-blue-2019_GEO_US_FMT_WHH.png";
-import AppleiPhone11 from "../../Container/Image/Apple iPhone 11.png";
-import AppleWatch from "../../Container/Image/Apple Watch 21-1.png";
-import AppleAirPods from "../../Container/Image/apple_airpods.png";
-import AppleiPad from "../../Container/Image/Apple Ipad.png";
-import AppleSmartWatch from "../../Container/Image/Apple Smartwatch Magic.png";
-import AppleMacBook from "../../Container/Image/apple_macbook.png";
+import { BsFillCartPlusFill } from "react-icons/bs";
+import { FaRegHeart } from "react-icons/fa";
+import { MainContext } from "../../Context/Context";
 
-const ProductBox = () => {
-  const bestSellerItem = [
-    {
-      image: AppleMacBook,
-      productName: "Apple Macbook Pro",
-      new_price: 499,
-      old_price: 599,
-      rating: 4,
-      tag: true,
-    },
-    {
-      image: AppleiPad2A,
-      productName: "Apple iPad 2A",
-      new_price: 499,
-      old_price: 599,
-      rating: 3,
-      tag: false,
-    },
-    {
-      image: AppleMacBookAir,
-      productName: "Apple MacBook Air",
-      new_price: 499,
-      old_price: 599,
-      rating: 2,
-      tag: true,
-    },
-    {
-      image: AppleMacBookAir,
-      productName: "Apple MacBook Air",
-      new_price: 499,
-      old_price: 599,
-      rating: 5,
-      tag: false,
-    },
-    {
-      image: AppleiPhone11,
-      productName: "Apple iPhone 11",
-      new_price: 499,
-      old_price: 599,
-      rating: 3,
-      tag: true,
-    },
-    {
-      image: AppleAirPods,
-      productName: "Apple Air Pods",
-      new_price: 499,
-      old_price: 599,
-      rating: 4,
-      tag: true,
-    },
-    {
-      image: AppleiPad,
-      productName: "Apple iPad",
-      new_price: 499,
-      old_price: 599,
-      rating: 1,
-      tag: false,
-    },
-    {
-      image: AppleSmartWatch,
-      productName: "Apple Smart Watch",
-      new_price: 499,
-      old_price: 599,
-      rating: 5,
-      tag: true,
-    },
+const ProductBox = ({name,image,tag,price,discount,latest_price}) => {
+  const {
+    product,
+    isHome,
+    fetchProduct,
+    bestSellor,
+    API_BASE_URL,
+    productImageUrl,
+    cat,
+    catFilterProduct,
+  } = useContext(MainContext);
 
-    {
-      image: AppleWatch,
-      productName: "Apple Watch 21.1",
-      new_price: 499,
-      old_price: 599,
-      rating: 3,
-      tag: true,
-    },
-  ];
+  useEffect(() => {
+    fetchProduct();
+  }, []);
 
+  // console.log(catFilterProduct)
+  // console.log(cat)
   return (
-    <Container>
-      <div className="flex flex-wrap gap-4 justify-center">
-        {bestSellerItem.map((d, i) => {
-          return (
-            <div key={i} className="w-[236px] hover:shadow-2xl mt-5">
-              {d.tag ? <div className="w-12 h-8 bg-[#FF4858] text-white flex justify-center items-center font-[600]" >HOT</div> : ""}
-
-              <img src={d.image} alt="macbook" className="h-[px]" />
-              <h2 className="text-center font-semibold">{d.productName}</h2>
-              <ul className="flex justify-center gap-1 mt-2 mb-2">
-                <Stars yellow={d.rating} />
-              </ul>
-              <div className="flex gap-5 justify-center">
-                <p className="text-red-700 font-medium">${d.new_price}</p>
-                <p className="line-through">${d.old_price}</p>
+   
+        <div
+          className=" group relative hover:shadow-2xl overflow-hidden  mt-5 "
+        >
+          <div className="absolute bg-[rgba(0,0,0,0.7)]  w-full h-full z-50 top-full left-0 group-hover:top-0 transition-all duration-500  flex justify-center items-center">
+            <div className="flex gap-3">
+              <div className="w-12 h-12 bg-red-100 cursor-pointer flex justify-center items-center rounded-full">
+                <FaRegHeart size={25} color="blue" />
+              </div>
+              <div className="w-12 h-12 bg-blue-100 cursor-pointer  flex justify-center items-center rounded-full">
+                <BsFillCartPlusFill size={25} color="red" />
               </div>
             </div>
-          );
-        })}
-      </div>
-    </Container>
+          </div>
+          {tag ? (
+            <div className="w-12 h-8 bg-[#FF4858] text-white flex justify-center items-center font-[600]">
+              HOT
+            </div>
+          ) : (
+            ""
+          )}
+
+          <img
+            src={API_BASE_URL + productImageUrl + image}
+            alt="macbook"
+            className="h-[100px] mx-auto"
+          />
+          <h2 className="text-center font-semibold">{name}</h2>
+          <ul className="flex justify-center gap-1 mt-2 mb-2">
+            <Stars yellow={5} />
+          </ul>
+          <div className="flex gap-5 justify-center">
+            <p className="text-red-700 font-medium">${price}</p>
+            <p className="line-through">${latest_price}</p>
+          </div>
+          <div className="text-xl text-center text-green-500">
+            {discount} % OFF 😍
+          </div>
+        </div>
+     
   );
 };
 

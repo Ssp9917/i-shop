@@ -13,7 +13,7 @@ const CategoryView = () => {
   const [isUpdate, setIsUpdate] = useState(false);
   const {
     openToast,
-    data,
+    category,
     fetchCategory,
     categoryImageUrl,
     CATEGORY_BASE_URL,
@@ -77,8 +77,7 @@ const CategoryView = () => {
           if (success.data.status == 1) {
             event.target.reset();
             setTogle(false);
-            openToast(success.data.msg, 'success');
-            fetchCategory();
+               fetchCategory();
           }else{
             openToast(success.data.msg,'error')
           }
@@ -96,10 +95,10 @@ const CategoryView = () => {
 
   // delete Api
 
-  const deleteHandler = (id) => {
-    console.log(API_BASE_URL + CATEGORY_BASE_URL + "/delete/" + id);
+  const deleteHandler = (id,image) => {
+    // console.log(API_BASE_URL + CATEGORY_BASE_URL + "/delete/" + id +);
     axios
-      .delete(API_BASE_URL + CATEGORY_BASE_URL + "/delete/" + id)
+      .delete(API_BASE_URL + CATEGORY_BASE_URL + "/delete/" + id + '/name/' + image)
       .then((success) => {
         console.log(success);
         openToast(success.data.msg, "success");
@@ -170,14 +169,14 @@ const CategoryView = () => {
             encType="multipart/form-data"
             onSubmit={categorySubmitHandler}
           >
-            <div class="mb-3">
+            <div className="mb-3">
               {/* hidden inputes */}
               <input type="hidden" ref={categoryIdRef} name="category_id" />
               <input type="hidden" ref={oldNameRef} name="old_name" />
 
               <label
                 for="name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Category Name
               </label>
@@ -187,15 +186,15 @@ const CategoryView = () => {
                 name="name"
                 ref={nameRef}
                 onChange={catToSlug}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Enter your category"
                 required
               />
             </div>
-            <div class="mb-3">
+            <div className="mb-3">
               <label
                 for="slug"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Category Slug
               </label>
@@ -205,14 +204,14 @@ const CategoryView = () => {
                 readOnly
                 name="slug"
                 ref={slugRef}
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 required
               />
             </div>
-            <div class="mb-3">
+            <div className="mb-3">
               <label
                 for="file"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
                 Image
               </label>
@@ -220,12 +219,12 @@ const CategoryView = () => {
                 type="file"
                 name="image"
                 id="file"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
             </div>
             <button
               type="submit"
-              class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
               {isUpdate ? "Save" : "Add"}
             </button>
@@ -249,52 +248,52 @@ const CategoryView = () => {
         </button>
       </div>
       {/* // table code start */}
-      <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 SR
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Product name
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Slug
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Image
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Status
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {data.map((d, i) => {
+            {category.map((d, i) => {
               // console.log(d)
-              console.log(API_BASE_URL + categoryImageUrl + d.image);
+              // console.log(API_BASE_URL + categoryImageUrl + d.image);
               return (
-                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                  <td class="px-6 py-4">{i + 1}</td>
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={i}>
+                  <td className="px-6 py-4">{i + 1}</td>
                   <th
                     scope="row"
-                    class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
                     {d.name}
                   </th>
-                  <td class="px-6 py-4">{d.slug}</td>
-                  <td class="px-6 py-4">
+                  <td className="px-6 py-4">{d.slug}</td>
+                  <td className="px-6 py-4">
                     <img
                       src={API_BASE_URL + categoryImageUrl + d.image}
-                      class="w-8 md:w-16 max-w-full max-h-full"
+                      className="w-8 md:w-16 max-w-full max-h-full"
                       alt="Apple Watch"
                     />
                   </td>
-                  <td class="px-6 py-4">
+                  <td className="px-6 py-4">
                     <div>
                       {d.status == true ? (
                         <div
@@ -317,12 +316,12 @@ const CategoryView = () => {
                       )}
                     </div>
                   </td>
-                  <td class="px-6 py-4">
+                  <td className="px-6 py-4">
                     <div className="flex">
                       <div
                         className="text-red-500 w-12 h-12 mt-2 inline-block"
                         onClick={() => {
-                          deleteHandler(d._id);
+                          deleteHandler(d._id,d.image);
                         }}
                       >
                         <MdOutlineDeleteForever size={30} />

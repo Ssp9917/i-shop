@@ -1,9 +1,8 @@
-const CategoryModel = require("../models/category");
-const { unlinkSync } = require("fs");
+const ColorModel = require("../models/color");
 
-class CategoryController {
+class ColorController {
   constructor() {
-    this.model = CategoryModel;
+    this.model = ColorModel;
   }
 
   //* Get api logic
@@ -11,17 +10,16 @@ class CategoryController {
     return new Promise(async (res, rej) => {
       try {
         let data = "";
-        if (id) {
-          data = await this.model.findById(id);
-        } else {
-          data = await this.model.find();
+        if(id){
+            data = await this.model.findById(id)
+        }else{
+            data = await this.model.find();
         }
 
         res({
           msg: "All Data ",
           status: 1,
           data,
-          imageBaseUrl: "/images/category/",
         });
       } catch (error) {
         rej({
@@ -33,43 +31,29 @@ class CategoryController {
   }
 
   //* Create api logic
-  create(data, image) {
+  create(data) {
     return new Promise((res, rej) => {
       try {
-        // file related code start
-        const imageName =
-          new Date().getTime() + Math.floor(Math.random() * 1000) + image.name;
-        const destination = "./public/images/category/" + imageName;
-        image.mv(destination, (err) => {
-          if (err) {
+        const color = new this.model({
+          name: data.name,
+          slug: data.slug,
+        });
+
+        color
+          .save()
+          .then(() => {
+            res({
+              msg: "Category Added Successfully",
+              status: 1,
+            });
+          })
+          .catch((err) => {
+            // console.log(err)
             rej({
-              msg: "Unable to upload the file",
+              msg: "Unable to add category",
               status: 0,
             });
-          } else {
-            const category = new this.model({
-              name: data.name,
-              slug: data.slug,
-              image: imageName,
-            });
-
-            category
-              .save()
-              .then(() => {
-                res({
-                  msg: "Category Added Successfully",
-                  status: 1,
-                });
-              })
-              .catch((err) => {
-                // console.log(err)
-                rej({
-                  msg: "Unable to add category",
-                  status: 0,
-                });
-              });
-          }
-        });
+          });
         // file related code end
       } catch (error) {
         rej({
@@ -81,13 +65,12 @@ class CategoryController {
   }
 
   //* Delete api logic
-  delete(id,image) {
+  delete(id) {
     return new Promise((res, rej) => {
       try {
         this.model
           .deleteOne({ _id: id })
           .then(() => {
-            unlinkSync(`./public/images/category/${image}`),
             res({
               msg: "Data deleted success",
               status: 1,
@@ -147,10 +130,9 @@ class CategoryController {
   }
 
   //* Edit data logic
-  update(id, data, image) {
+  update(id, data) {
     return new Promise((res, rej) => {
       try {
-        if (image == null) {
           this.model
             .updateOne({ _id: id }, { name: data.name, slug: data.slug })
             .then(() => {
@@ -165,42 +147,8 @@ class CategoryController {
                 status: 0,
               });
             });
-        } else {
-          const imageName =
-            new Date().getTime() +
-            Math.floor(Math.random() * 1000) +
-            image.name;
-          const destination = "./public/images/category/" + imageName;
-
-          image.mv(destination, (err) => {
-            if (!err) {
-              this.model
-                .updateOne(
-                  { _id: id },
-                  { name: data.name, slug: data.slug, image: imageName }
-                )
-                .then(() => {
-                  unlinkSync(`./public/images/category/${data.old_name}`);
-                  res({
-                    msg: "Data updated",
-                    status: 1,
-                  });
-                })
-                .catch(() => {
-                  rej({
-                    msg: "Unable to update the data",
-                    status: 0,
-                  });
-                });
-            } else {
-              rej({
-                msg: "Unable to upload file",
-                status: 0,
-              });
-            }
-          });
-        }
       } catch (err) {
+        console.log(err)
         rej({
           msg: "Internal server error",
           status: 0,
@@ -210,4 +158,4 @@ class CategoryController {
   }
 }
 
-module.exports = CategoryController;
+module.exports = ColorController;

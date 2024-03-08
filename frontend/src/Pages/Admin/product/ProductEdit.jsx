@@ -1,12 +1,14 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Select from "react-select";
 import { MainContext } from "../../../Context/Context";
+import { useNavigate, useParams } from "react-router-dom";
 import { FileUploader } from "react-drag-drop-files";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+const ProductEdit = () => {
+  // useParems
+  const { id } = useParams();
+  const [editProduct, setEditProduct] = useState(null);
 
-
-const ProductAdd = () => {
   // all ref
   const priceRef = useRef();
   const discountRef = useRef();
@@ -15,43 +17,45 @@ const ProductAdd = () => {
   const slugRef = useRef();
 
   // select state
-  const [prodCategory,setProdCategory] = useState(null)
-  const [prodColor,setProdColor] = useState(null)
+  const [prodCategory, setProdCategory] = useState(null);
+  const [prodColor, setProdColor] = useState(null);
 
   // context
-  const { fetchCategory, category, fetchColor, color,PRODUCT_BASE_URL,API_BASE_URL,openToast,fetchProduct,productImageUrl,loader,setLoader} =
-    useContext(MainContext);
+  const {
+    fetchCategory,
+    category,
+    fetchColor,
+    color,
+    PRODUCT_BASE_URL,
+    API_BASE_URL,
+    openToast,
+    fetchProduct,
+    productImageUrl
+  } = useContext(MainContext);
 
   // useNevigate
-  const nevigator = useNavigate()
-
-  // useEffect
-  useEffect(() => {
-    fetchCategory();
-    fetchColor();
-  }, []);
+  const nevigator = useNavigate();
 
   // discount
   const discount = () => {
     const price = priceRef.current.value;
     const discount = discountRef.current.value;
-    latest_priceRef.current.value = price - price * (discount / 100);
+    return price - price * (discount / 100);
   };
 
   // catToSlug
-  const catToSlug = () => {
-    const slug = nameRef.current.value
+  const catToSlug = (title) => {
+    const slug = title
       .toLowerCase()
       .replaceAll(" ", "-")
       .replaceAll("'", " ")
       .trim();
-    slugRef.current.value = slug;
+    return slug;
   };
 
   // file drop related
   const [file, setFile] = useState(null);
   const handleChange = (file) => {
-    // console.log(file)
     setFile(file);
   };
 
@@ -72,52 +76,80 @@ const ProductAdd = () => {
       value: d._id,
     };
   });
-  
 
   //************ react select code end **********
 
+  //findSingle Product details
+  useEffect(() => {
+    axios
+      .get(API_BASE_URL + PRODUCT_BASE_URL + "/" + id)
+      .then((success) => {
+        // console.log(success)
+        if (success.data.status == 1) {
+          setEditProduct(success.data.product);
+          console.log(editProduct)
+        } else {
+          // console.log(success)
+          openToast(success.data.msg, "error");
+        }
+      })
+      .catch((err) => {
+        openToast(err.message, "error");
+      });
+  }, []);
 
-  // product submit api
-  const productSubmitHandler = (e) =>{
-    e.preventDefault()
-    setLoader(true)
+  // find select details
+  useEffect(()=>{
+    if(editProduct != null || editProduct != undefined){
+      setProdCategory({value:editProduct?.category._id,label:editProduct?.category.name})
+      setProdColor(editProduct?.color.map(
+        (color)=>{
+          return(
+            {
+              value:color._id,
+              label:color.name
+            }
+          )
+        }
+      ))
+    }
+  },[editProduct])
+
+  // console.log(product)
+
+  const prodEditHandler = (e) => {
+    e.preventDefault();
+
     const formData = new FormData();
-    formData.append("name",e.target.name.value);
-    formData.append("slug",e.target.slug.value);
-    formData.append("price",e.target.price.value);
-    formData.append("discount",e.target.discount.value);
-    formData.append("latest_price",e.target.latest_price.value);
-    formData.append("image",file);
-    formData.append("category",prodCategory);
-    formData.append("color",JSON.stringify(prodColor));
+    formData.append("name", e.target.name.value);
+    formData.append("slug", e.target.slug.value);
+    formData.append("price", e.target.price.value);
+    formData.append("discount", e.target.discount.value);
+    formData.append("latest_price", e.target.latest_price.value);
+    formData.append("image", file);
+    formData.append("old_name", editProduct?.image);
+    formData.append("category", prodCategory.value);
 
+    const prodData = prodColor.map(color=>color.value)
+    formData.append("color", JSON.stringify(prodData));
 
-
-    axios.post(API_BASE_URL+PRODUCT_BASE_URL+'/create',formData).then(
+    axios.put(API_BASE_URL+PRODUCT_BASE_URL+'/update/'+id,formData).then(
       (success)=>{
+        // console.log(success)
         openToast(success.data.msg)
-        e.target.reset()
         fetchProduct()
         nevigator('/admin/product')
-        setLoader(false)
       }
     ).catch(
       (err)=>{
-        setLoader(false)
-        openToast(err.message)
+        console.log(err)
       }
     )
-  }
+  };
 
   return (
-    <div className="mt-20">
-      <div className="flex items-center justify-between">
-        <h2 className="text-4xl ps-3 font-semibold">Add Product</h2>
-      </div>
-      <hr className="!border-t-2 mt-3" />
-
-      {/* form started */}
-      <form className="m-4" onSubmit={productSubmitHandler}>
+    <div>
+      <form className="m-4" onSubmit={prodEditHandler}>
         {/* first row */}
         <div className="mb-3 grid grid-cols-2 gap-5">
           <div>
@@ -128,11 +160,15 @@ const ProductAdd = () => {
               Product Name
             </label>
             <input
+              value={editProduct?.name}
               type="text"
               id="name"
               name="name"
               ref={nameRef}
-              onChange={catToSlug}
+              onChange={(e) => {
+                setEditProduct({ ...editProduct, name: e.target.value,slug:catToSlug(e.target.value) });
+                
+              }}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Enter your category"
               required
@@ -147,6 +183,8 @@ const ProductAdd = () => {
               Product Slug
             </label>
             <input
+              value={editProduct?.slug}
+              onChange={(e) => setEditProduct({ ...editProduct, slug: e.target.value })}
               type="text"
               ref={slugRef}
               readOnly
@@ -168,8 +206,11 @@ const ProductAdd = () => {
               Product Price
             </label>
             <input
+              value={editProduct?.price}
+              onChange={(e) => {
+                setEditProduct({ ...editProduct, price: e.target.value,latest_price:discount() });
+              }}
               type="number"
-              onChange={discount}
               id="price"
               name="price"
               ref={priceRef}
@@ -187,7 +228,10 @@ const ProductAdd = () => {
             </label>
             <input
               type="number"
-              onChange={discount}
+              value={editProduct?.discount}
+              onChange={(e) => {
+                setEditProduct({ ...editProduct, discount: e.target.value,latest_price:discount() });
+              }}
               ref={discountRef}
               id="discount"
               name="discount"
@@ -205,6 +249,7 @@ const ProductAdd = () => {
             <input
               type=""
               readOnly
+              value={editProduct?.latest_price}
               ref={latest_priceRef}
               id="latest_price"
               name="latest_price"
@@ -217,15 +262,15 @@ const ProductAdd = () => {
         {/* third row */}
         <div className="mb-3 grid grid-cols-2 gap-5">
           <div>
-            <label
-              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-            >
+            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
               Product Category
             </label>
             <Select
-              onChange={(options)=>{
-                setProdCategory(options.value)
+              onChange={(options) => {
+                setProdCategory(options);
               }}
+              value={prodCategory}
+              
               className="basic-single"
               classNamePrefix="select"
               isSearchable={true}
@@ -242,14 +287,13 @@ const ProductAdd = () => {
               Select color
             </label>
             <Select
-              onChange={(options)=>{
-                const d = options.map((option)=>option.value)
-                setProdColor(d)
+              onChange={(options) => {
+                setProdColor(options);
               }}
+              value={prodColor}
               closeMenuOnSelect={false}
               isMulti
               options={colorOptions}
-             
             />
           </div>
         </div>
@@ -263,22 +307,20 @@ const ProductAdd = () => {
             >
               Product Image
             </label>
-            <FileUploader handleChange={handleChange} name="file"  />
+            <FileUploader handleChange={handleChange} name="file" defaultValue={editProduct?.image} />
             <span>{file?.name}</span>
-            {/* <img src={API_BASE_URL+PRODUCT_BASE_URL+productImageUrl+file?.name} alt="" /> */}
+            <img src={API_BASE_URL+productImageUrl+editProduct?.image} alt="" />
           </div>
         </div>
-
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
-          Add
+          Save
         </button>
       </form>
-      {/* form ended */}
     </div>
   );
 };
 
-export default ProductAdd;
+export default ProductEdit;

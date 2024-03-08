@@ -66,7 +66,7 @@ const Footer = () => {
 
   return (
     <Container>
-      <div className="w-full  flex flex-wrap pb-9 mb-5 border-b  justify-center gap-5 mt-16">
+      <div className="w-full  flex flex-wrap pb-9 mb-5 border-b  justify-around gap-5 mt-16">
         <div className="w-[350px]">
           <img src={FooterImg} alt="" />
           <p className="mt-3">
@@ -100,9 +100,9 @@ const Footer = () => {
       </div>
       <div >
         {ftrData.map((d, i) => {
-          console.log(d);
+          // console.log(d);
           return (
-            <div key={i} className=" flex flex-wrap justify-center gap-12">
+            <div key={i} className=" flex flex-wrap justify-around gap-12">
               {d.name.map((data, i) => {
                 return (
                   <div key={i}>
@@ -123,7 +123,7 @@ const Footer = () => {
         {
           ftrIcons.map(
             (d,i)=>{
-              return <img src={d.image} alt="" />
+              return <img key={i} src={d.image} alt="" />
             }
           )
         }

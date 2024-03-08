@@ -6,8 +6,8 @@ const fileUpload = require('express-fileupload')
 const CategoryRouter = Router();
 
 //* get data api
-CategoryRouter.get('/read',(req,res)=>{
-   new CategoryController().read().then(
+CategoryRouter.get('/read/:id?',(req,res)=>{
+   new CategoryController().read(req.params.id).then(
     (success)=>{
         console.log(success)
         res.send(success)
@@ -43,8 +43,8 @@ fileUpload({
 });
 
 //* Delete data api 
-CategoryRouter.delete('/delete/:id',(req,res)=>{
-    new CategoryController().delete(req.params.id).then(
+CategoryRouter.delete('/delete/:id/name/:image',(req,res)=>{
+    new CategoryController().delete(req.params.id,req.params.image).then(
         (success)=>{
             res.send(success)
         }

@@ -44,7 +44,7 @@ const Header = () => {
 
   return (
     <>
-      <Container fluid extraClass="shadow">
+      <Container fluid extraclassName="shadow">
         <Container>
           <div className="hidden sm:justify-between  sm:flex px-3 pe-3">
             <div className="flex items-center gap-3">
@@ -82,11 +82,11 @@ const Header = () => {
         "
         >
           {navItems.map((d, i) => {
-            console.log(d);
+            // console.log(d);
             return (
               <li
                 key={i}
-                className="hover:text-red-400 text-[14px] navListItems font-bold "
+                className="hover:text-red-400 text-[14px] navListItems font-bold mb-3"
               >
                 <Link to={d.path}>{d.name}</Link>
               </li>
@@ -104,10 +104,10 @@ const Header = () => {
           <IoClose onClick={()=>setMenu(false)} className="text-4xl text-white absolute right-2 top-2"/>
 
           {/* Search Bar */}
-          <div class="relative mt-16 ml-5 mr-5">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+          <div className="relative mt-16 ml-5 mr-5">
+            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
-                class="w-4 h-4 text-gray-500 dark:text-gray-400"
+                className="w-4 h-4 text-gray-500 dark:text-gray-400"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -125,7 +125,7 @@ const Header = () => {
             <input
               type="search"
               id="default-search"
-              class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-3xl bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-3xl bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search Mockups, Logos..."
               required
             />
