@@ -1,16 +1,35 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "../../Container/Website/Container";
+import { useDispatch, useSelector } from "react-redux";
+import { MainContext } from "../../Context/Context";
+import { IoCloseSharp } from "react-icons/io5";
+import { removeFromCart } from "../../reducers/cartSlice";
 
 const Cart = () => {
-  const cartItems = [
-    {
-      image: "",
-      title: "Philips Hue 7W BR30 Connected Downlight Lamp",
-      price: 998,
-      qty: 1,
-      unit_price: 499,
-    },
-  ];
+  const cart = useSelector((store) => store.cart);
+
+  const { API_BASE_URL, PRODUCT_BASE_URL,fetchProduct,product,productImageUrl } = useContext(MainContext);
+
+  const dispatcher = useDispatch()
+
+  useEffect(() => {
+   fetchProduct()
+  }, []);
+
+  //for loop
+  const cartProducts = []
+  for(let p of product){
+    for(let c of cart.data){
+      if(c.pId == p._id){
+        cartProducts.push(
+          {
+            ...c,
+            ...p
+          }
+        )
+      }
+    }
+  }
 
   return (
     <Container extraClass={"mt-4"}>
@@ -21,42 +40,45 @@ const Cart = () => {
           <div>Image</div>
         </div>
         <div className=" col-span-3 text-center text-[#22262A] font-[600] ">
-          Title
-        </div>
-        <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
-          Price
-        </div>
-        <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
-          Qty
+          Product Name
         </div>
         <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
           Unit Price
         </div>
+       
+        <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
+          Qty
+        </div>
+        <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
+         Total Price
+        </div>
         <div className="text-center text-[#22262A] font-[600]">Remove</div>
       </div>
 
-      {cartItems.map((d, i) => {
-       
+      {cartProducts.map((d, i) => {
+        
         return (
-          <div className=" grid grid-cols-12  mt-4">
+          <div className=" grid grid-cols-12  mt-4 items-center">
             <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
-              <div>
-                <img src={d.image} alt="" />
+              <div className="mx-4">
+                <img src={API_BASE_URL+productImageUrl+d.image} width={150} alt="" />
               </div>
             </div>
             <div className=" col-span-3 text-center text-[#22262A] font-[600] ">
-              {d.title}
+              {d.name}
             </div>
             <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
               {d.price}
             </div>
+           
             <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
               {d.qty}
             </div>
             <div className=" col-span-2 text-center text-[#22262A] font-[600] ">
-              {d.unit_price}
+              {d.price*d.qty}
             </div>
-            <div className="text-center text-[#22262A] font-[600]">X</div>
+            
+            <div className="text-center text-[#22262A] font-[600] flex justify-center items-center"><IoCloseSharp onClick={()=>dispatcher(removeFromCart({pId:d.pId,total_price:d.price*d.qty}))} size={25} color="red" className="cursor-pointer"/></div>
           </div>
         );
       })}

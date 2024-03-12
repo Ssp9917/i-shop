@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { createBrowserRouter, RouterProvider} from 'react-router-dom'
 import WebsiteMain from './Pages/Website/WebsiteMain'
 import Home from './Pages/Website/Home'
@@ -13,6 +13,8 @@ import ColorAdd from './Pages/Admin/colors/ColorAdd'
 import ColorEdit from './Pages/Admin/colors/ColorEdit'
 import ProductAdd from './Pages/Admin/product/ProductAdd'
 import ProductEdit from './Pages/Admin/product/ProductEdit'
+import { useDispatch } from 'react-redux'
+import { lsToCart } from './reducers/cartSlice'
 
 
 const routes = createBrowserRouter(
@@ -77,10 +79,17 @@ const routes = createBrowserRouter(
 )
 
 const App = () => {
-  return (
-   <RouterProvider router={routes} />
 
-   
+  const dispatcher = useDispatch()
+
+  useEffect(
+    ()=>{
+      dispatcher(lsToCart())
+    },[]
+  )
+
+  return (
+   <RouterProvider router={routes} /> 
   )
 }
 

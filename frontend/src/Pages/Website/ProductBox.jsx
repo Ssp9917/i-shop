@@ -3,22 +3,17 @@ import { FaStar } from "react-icons/fa";
 import { BsFillCartPlusFill } from "react-icons/bs";
 import { FaRegHeart } from "react-icons/fa";
 import { MainContext } from "../../Context/Context";
+import { addToCart } from "../../reducers/cartSlice";
+import { useDispatch } from "react-redux";
 
-const ProductBox = ({name,image,tag,price,discount,latest_price}) => {
+const ProductBox = ({name,image,tag,price,discount,latest_price,_id}) => {
+
+  const dispatcher = useDispatch()
+
   const {
-    product,
-    isHome,
-    fetchProduct,
-    bestSellor,
     API_BASE_URL,
     productImageUrl,
-    cat,
-    catFilterProduct,
   } = useContext(MainContext);
-
-  useEffect(() => {
-    fetchProduct();
-  }, []);
 
   // console.log(catFilterProduct)
   // console.log(cat)
@@ -33,7 +28,7 @@ const ProductBox = ({name,image,tag,price,discount,latest_price}) => {
                 <FaRegHeart size={25} color="blue" />
               </div>
               <div className="w-12 h-12 bg-blue-100 cursor-pointer  flex justify-center items-center rounded-full">
-                <BsFillCartPlusFill size={25} color="red" />
+                <BsFillCartPlusFill size={25} color="red" onClick={()=>dispatcher(addToCart({ pId:_id, qty:1,price:latest_price}))} />
               </div>
             </div>
           </div>

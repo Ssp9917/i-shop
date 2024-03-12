@@ -33,6 +33,7 @@ const Store = () => {
   const [selColor, setSelColor] = useState(null);
   // useSearchParams
   const [searchParams, setSearchParams] = useSearchParams();
+  // console.log(searchParams.toString())
 
 
   // first render
@@ -42,6 +43,7 @@ const Store = () => {
     setCat(0);
 
     // get and set search params
+    console.log(searchParams.get("color_id"))
     if (searchParams.get("color_id")) {
       setSelColor(searchParams.get("color_id"));
     }
@@ -59,7 +61,7 @@ const Store = () => {
     if (selColor) {
       searchQuery.color_id = selColor;
     }
-
+    
     setSearchParams(searchQuery);
   }, [limit, selColor, category_slug]);
 
@@ -102,7 +104,7 @@ const Store = () => {
           <div className=" bg-[#F6F7F8] m-4 mt-0">
             <div className="text-[#22262A] font-bold text-xl ml-5 pt-4 pb-3 flex justify-between items-center ">
               Categories
-              <HiRefresh size={25} color="red" className="me-2" />
+             <Link to={"/store"}> <HiRefresh size={25} color="red" className="me-2" /></Link>
             </div>
 
             <ul>

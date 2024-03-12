@@ -91,7 +91,7 @@ const Context = (props) => {
   useEffect(() => {
     fetchCategory();
     fetchColor();
-    fetchProduct();
+    // fetchProduct();
     fetchBestSellor()
   }, []);
 
@@ -105,6 +105,7 @@ const Context = (props) => {
   const fetchBestSellor = () => {
     axios.get("http://localhost:5000/product/best-sellor").then((success) => {
       setBestSellor(success.data.bestSellor);
+      setProductImageUrl(success.data.imageBaseUrl)
     });
   };
 

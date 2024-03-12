@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^8.2.2"
+    "@reduxjs/toolkit": "^2.2.1",
+    "concurrently": "^8.2.2",
+    "react-redux": "^9.1.0"
   }
 }

@@ -8,12 +8,15 @@ import { Link } from "react-router-dom";
 import { AiOutlineBars } from "react-icons/ai";
 import { FaSearch } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
+import { useSelector } from "react-redux";
 
 
 
 const Header = () => {
 
   const [menu,setMenu] = useState(false)
+  const cart = useSelector(store=>store.cart);
+  console.log(cart)
 
   const navItems = [
     {
@@ -58,11 +61,11 @@ const Header = () => {
             <div className="flex items-center gap-5">
               <FaUserTie />
               <span>My Profile</span>
-
+              <Link to='/cart' className="flex items-center gap-5">
               <IoBagAdd />
-              <span>0 Items</span>
-
-              <span className="text-gray-300">$998</span>
+              <span>{cart.data.length} Items</span>
+              <span className="text-gray-300">${cart.total}</span>
+              </Link>
               <span className="pl-12">
                 <FaSearch />
               </span>
