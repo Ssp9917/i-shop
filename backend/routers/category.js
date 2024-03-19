@@ -9,7 +9,7 @@ const CategoryRouter = Router();
 CategoryRouter.get('/read/:id?',(req,res)=>{
    new CategoryController().read(req.params.id).then(
     (success)=>{
-        console.log(success)
+        // console.log(success)
         res.send(success)
     }
    ).catch(

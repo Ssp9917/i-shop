@@ -295,7 +295,7 @@ const ProductView = () => {
                       <img
                         src={API_BASE_URL + productImageUrl + d.image}
                         className="w-8 md:w-16 max-w-full max-h-full"
-                        alt="Apple Watch"
+                        alt={d.image}
                       />
                     </td>
                     <td className="px-6 py-4">

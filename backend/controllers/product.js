@@ -1,6 +1,6 @@
 const CategoryModel = require("../models/category");
 const ProductModel = require("../models/product");
-const ColorModel = require('../models/color')
+const ColorModel = require("../models/color");
 const { unlinkSync } = require("fs");
 
 class ProductController {
@@ -10,30 +10,41 @@ class ProductController {
 
   // read api logic
   read(id, query) {
-    // console.log(query)
+    // console.log(query);
+
     return new Promise(async (res, rej) => {
       try {
         let product = [];
-        const dbQuery = {}
+        const dbQuery = {};
+
+        const skip = (query.page - 1) * query.limit;
+
+        const count = await this.model.countDocuments();
+
+        const pageCount = Math.ceil(count / query.limit);
 
         // category filter logic
-        if(query.category_slug){
-          const category = await CategoryModel.findOne({slug : query.category_slug})
-          if(category != null){
-            // console.log(category)
-            dbQuery.category = category._id
-            // console.log(dbQuery)
+        if (query.category_slug) {
+          const category = await CategoryModel.findOne({
+            slug: query.category_slug,
+          });
+          if (category != null) {
+            dbQuery.category = category._id;
+          }
         }
-        }
+
         // color filter logic
-        if(query.color_id != "null"){
-          const color = await ColorModel.findById(query.color_id)
-        // console.log(color)
-          if(color != null){
-            dbQuery.color = color._id
-            // console.log(dbQuery)
+        if (query.color_id != "null") {
+          const color = await ColorModel.findById(query.color_id);
+          if (color != null) {
+            dbQuery.color = color._id;
+          }
         }
-        }
+
+        // price filter logic
+        // if (query.minPrice && query.maxPrice) {
+        //     dbQuery.price = { $gte: query.minPrice, $lte: query.maxPrice };
+        // }
 
         if (id) {
           product = await this.model
@@ -44,9 +55,13 @@ class ProductController {
             product = await this.model
               .find(dbQuery)
               .populate(["category", "color"])
-              .limit(query.limit);
+              .limit(query.limit)
+              .sort(query.sort)
+              .skip(skip);
           } else {
-            product = await this.model.find(dbQuery).populate(["category", "color"]);
+            product = await this.model
+              .find(dbQuery)
+              .populate(["category", "color"]);
           }
         }
         res({
@@ -54,6 +69,10 @@ class ProductController {
           status: 1,
           product,
           imageBaseUrl: "/images/product/",
+          pagination: {
+            count,
+            pageCount,
+          },
         });
       } catch (error) {
         rej({
@@ -336,7 +355,7 @@ class ProductController {
     return new Promise(async (res, rej) => {
       try {
         let bestSellor = [];
-        bestSellor = await this.model.find({bestSellor:true});
+        bestSellor = await this.model.find({ bestSellor: true });
 
         res({
           msg: "All Best Sellor Product",

@@ -15,6 +15,14 @@ import ProductAdd from './Pages/Admin/product/ProductAdd'
 import ProductEdit from './Pages/Admin/product/ProductEdit'
 import { useDispatch } from 'react-redux'
 import { lsToCart } from './reducers/cartSlice'
+import Login from './Pages/Website/Login'
+import SignUp from './Pages/Website/SignUp'
+import { lsToLogin } from './reducers/userSlice'
+import MyProfile from './Pages/Website/MyProfile'
+import SingleProduct from './Pages/Website/SingleProduct'
+import UserView from './Pages/Admin/users/UserView'
+import Checkout from './Pages/Website/Checkout'
+import ThankYouPage from './Pages/Website/ThankYouPage'
 
 
 const routes = createBrowserRouter(
@@ -34,9 +42,34 @@ const routes = createBrowserRouter(
         {
           path:"cart",
           element:<Cart/>
+        },
+        {
+          path:"myProfile",
+          element:<MyProfile/>
+        },
+        {
+          path:"/:id",
+          element:<SingleProduct/>
+        },
+        {
+          path:"checkout",
+          element:<Checkout/>
+        },
+        {
+          path:'order-placed/:id',
+          element:<ThankYouPage/>
         }
-      ]
-    },
+      ]},
+      {
+        path:"/login",
+        element:<Login/>
+      },
+      {
+        path:"/signup",
+        element:<SignUp/>
+      }
+
+    ,
     {
       path:'/admin',
       element:<AdminMain/>,
@@ -72,6 +105,10 @@ const routes = createBrowserRouter(
         {
           path:'product/edit/:id?',
           element:<ProductEdit/>
+        },
+        {
+          path:'user',
+          element:<UserView/>
         }
       ]
     }
@@ -85,6 +122,7 @@ const App = () => {
   useEffect(
     ()=>{
       dispatcher(lsToCart())
+      dispatcher(lsToLogin())
     },[]
   )
 

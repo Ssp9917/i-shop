@@ -83,13 +83,13 @@ export function BestSellor() {
       </ul>
       <div className="ps-3 pe-3 sm:hidden">
         <label
-          for="countries"
+          for="category"
           className="block mb-2  font-medium text-gray-900 text-md"
         >
           Select an category
         </label>
         <select
-          id="countries"
+          id="category"
           onChange={(e) => setCat(e.target.value)}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
         >
@@ -110,7 +110,7 @@ export function BestSellor() {
          (cat==0?bestSellor:catFilterProduct).map(
             (prod,index)=>{
               // console.log(prod)
-             return <ProductBox {...prod} key={index}/>
+             return <ProductBox {...prod} grid={true} key={index}/>
             }
           )
         }
